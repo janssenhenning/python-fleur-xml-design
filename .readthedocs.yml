@@ -10,3 +10,6 @@ python:
     - requirements: requirements.txt
     - method: pip
       path: .
+
+build:
+  image: testing
