@@ -3,8 +3,14 @@
 \coordinate (C) at (0,0) {};
 \draw[name path=AC] (A) -- (C);
 \draw[name path=BC] (B) -- (C);
-\foreach \y/\A in {0.5/Basic,1.5/Intermediate,2.5/Name setters (no XPath required)} {
+\foreach \y/\A/\c in {0.5/Basic/red,1.5/Intermediate/blue,2.5/Name setters (no XPath required)/green} {
     \path[name path=horiz] (A|-0,\y+0.5) -- (B|-0,\y+0.5);
+    \path[name path=lower] (A|-0,\y-0.5) -- (B|-0,\y-0.5);
+    \draw[name intersections={of=AC and horiz,by=P},
+          name intersections={of=BC and horiz,by=Q},
+          name intersections={of=AC and lower,by=R},
+          name intersections={of=BC and lower,by=S},
+          fill=\c!25] (P) -- (Q) -- (S) -- (R) -- cycle;
     \draw[name intersections={of=AC and horiz,by=P},
           name intersections={of=BC and horiz,by=Q}] (P) -- (Q)
         node[midway,below] {\A};
