@@ -2,7 +2,6 @@ version: 2
 
 formats:
   - epub
-  - latex
   - pdf
 
 python:
