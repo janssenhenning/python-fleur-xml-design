@@ -3,4 +3,6 @@ myst-nb
 pydata-sphinx-theme
 sphinx-tabs
 sphinx-copybutton
+sphinxcontrib-tikz
 lxml
+masci-tools

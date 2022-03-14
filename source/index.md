@@ -95,6 +95,11 @@ and modifying `.xml` files
 ````
 `````
 
+```{note}
+This document does not try to explain the AiiDA framework itself but only the parts relevant
+for the XML functionality. For more information on AiiDA refer to it's [documentation](https://aiida.readthedocs.io/projects/aiida-core/en/latest/)
+```
+
 ## Problem
 
 The main Fleur input/output files are in a XML format since version `v27`. This provides
@@ -195,12 +200,126 @@ print(f"Text of 'child' elements: {text}")
 
 ## Using the XML schema file
 
+The XML Schema files provide a great way of programmatically discovering the structure of the
+`.xml` files and the types of the used attributes/text. The Schema files can be used in two
+ways by the `lxml` library. First an `etree.XMLSchema` object can be constructed to validate
+given XML files against this schema.
+
+```{code-cell} ipython3
+from lxml import etree
+
+schema = etree.XMLSchema(file='schemas/FleurInputSchema.xsd')
+
+xmltree = etree.parse('example_files/inp_valid.xml')
+print(f'Is this file valid? {schema(xmltree)}')
+```
+
+```{code-cell} ipython3
+from lxml import etree
+
+schema = etree.XMLSchema(file='schemas/FleurInputSchema.xsd')
+
+xmltree = etree.parse('example_files/inp_invalid.xml')
+print(f'Is this file valid? {schema(xmltree)}')
+```
+
+Or the file can be used like a normal XML file. The following example retrieves how many
+different complex types are defined in the schema.
+
+```{note}
+In Schema files all tags are prefixed with a special namespace `xsd`
+```
+
+```{code-cell} ipython3
+from lxml import etree
+
+xmltree = etree.parse('schemas/FleurInputSchema.xsd')
+
+namespaces = {'xsd': 'http://www.w3.org/2001/XMLSchema'}
+n_types = xmltree.xpath('count(/xsd:schema/xsd:complexType)', namespaces=namespaces)
+
+print(f'The input schema has {int(n_types)} complex types')
+```
+We employ the second way of handling XML Schemas to discover their structure. The 
+found information is stored in dictionary like structures called `InputSchemaDict` and `OutputSchemaDict`
+
+```{tikz} General structure of extracting information from XML Schema files. Blue nodes each refer to small functions working on the XML tree of the schema directly
+   :include: tikz/schema_structure.tikz
+   :align: center
+```
+
+```{admonition} Performance implications
+   Looking at this structure one problem you might spot is that we dramatically increased the number
+   of operations needed, just to get the path to a given tag. Previously the path would just be hardcoded
+   meaning almost no performance impact. With the new implementation a XML file maybe larger than the actual
+   input file has to be parsed.
+
+   To manage the impact of this there are multiple layers of reusing results, i.e. caching in the construction
+   of the `SchemaDict` objects.
+
+   1. The individual functions parsing the schema file use a lot of similar `XPath` expressions over and over again (on the order of ~1000 queries).
+      The results of these queries are cached
+   2. If a `SchemaDict` is constructed using the `fromVersion` method the SchemaDict is only constructed on the first
+      run. On subsequent calls with the same version string the cached object is returned
+```
+
+The `load_inpxml` and `load_outxml` functions in `masci_tools.io.io_fleurxml` provide this schema dictionary together with the
+parsed xml file just by giving the filepath to a given XML file.
+
+### Selecting Xpaths
+Below is a simple example of getting the complete Xpath for a given tag name
+```{code-cell} ipython3
+from masci_tools.io.parsers.fleur_schema import InputSchemaDict
+
+schema_dict = InputSchemaDict.fromVersion('0.35')
+print(schema_dict.tag_xpath('xcfunctional'))
+```
+
+```{code-cell} ipython3
+from masci_tools.io.parsers.fleur_schema import InputSchemaDict
+
+schema_dict = InputSchemaDict.fromVersion('0.31')
+print(schema_dict.tag_xpath('xcfunctional'))
+```
+
+```{note}
+   The tag name given in the method is case-insensitive `XCFUNCTIONAL` would also work
+```
+
+### Working with types
+
+Accessing the collected types of attribute/text
+
+```{code-cell} ipython3
+from masci_tools.io.parsers.fleur_schema import InputSchemaDict
+
+schema_dict = InputSchemaDict.fromVersion('0.35')
+print(schema_dict['attrib_types']['alpha'])
+print(schema_dict['text_types']['kpoint'])
+```
+
+`masci_tools.util.xml.converters` provides functions for robustly using these types
+
+```{code-cell} ipython3
+from masci_tools.io.parsers.fleur_schema import InputSchemaDict
+from masci_tools.util.xml.converters import convert_from_xml, convert_to_xml
+
+schema_dict = InputSchemaDict.fromVersion('0.35')
+print(convert_from_xml('16.500000000', schema_dict, 'alpha'))
+print(convert_from_xml('16.500000000*Pi', schema_dict, 'alpha')) #mathematical expressions
+
+print(convert_to_xml([0.0,1.0,2.0], schema_dict, 'kpoint', text=True))
+```
+```{note}
+The boolean second return value indicates whether the conversion was successful
+```
 ## XML getters
 
 ## Modifying XML files
 
 ## Predefined XML Parser
 
+## Error handling
 ## Indices and tables
 
 

@@ -31,7 +31,8 @@ extensions = [
     'myst_nb',
     'sphinx_tabs.tabs',
     'sphinx.ext.intersphinx',
-    'sphinx_copybutton'
+    'sphinx_copybutton',
+    'sphinxcontrib.tikz',
 ]
 
 intersphinx_mapping = {
@@ -60,3 +61,6 @@ html_theme = 'pydata_sphinx_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 #html_static_path = ['_static']
+
+tikz_tikzlibraries = 'arrows, chains, shapes, positioning, calc'
+tikz_includegraphics_path = 'tikz/graphics'
