@@ -1,0 +1,13 @@
+version: 2
+
+formats:
+  - epub
+  - pdf
+
+python:
+  version: 3.9
+  install:
+    - requirements: requirements.txt
+
+build:
+  image: testing
