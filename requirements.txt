@@ -1,0 +1,6 @@
+sphinx~=4.0
+myst-nb
+pydata-sphinx-theme
+sphinx-tabs
+sphinx-copybutton
+lxml

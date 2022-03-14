@@ -1,0 +1,33 @@
+name: build-doc
+
+on: [push, pull_request]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+
+    - name: Install python dependencies
+      run: |
+        pip install -r requirements.txt
+
+    - name: Build documentation
+      env:
+        READTHEDOCS: 'True'
+      run: |
+        SPHINXOPTS='-nW' make html
+    
+    - uses: actions/upload-artifact@v2
+      if: success()
+      with:
+        name: doc
+        path: build/html
