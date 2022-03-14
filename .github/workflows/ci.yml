@@ -19,6 +19,11 @@ jobs:
     - name: Install python dependencies
       run: |
         pip install -r requirements.txt
+    
+    - name: Install Latex compiler
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y latexmk dvipng texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
 
     - name: Build documentation
       env:
