@@ -264,7 +264,11 @@ found information is stored in dictionary like structures called `InputSchemaDic
 ```
 
 The `load_inpxml` and `load_outxml` functions in `masci_tools.io.io_fleurxml` provide this schema dictionary together with the
-parsed xml file just by giving the filepath to a given XML file.
+parsed xml file just by giving the filepath to a given XML file. The `aiida-fleur` `FleurinpData` class has a wrapper method
+for loading and validating `inp.xml` files, which is called, when any instance is instanitated with a file named `inp.xml`.
+
+All functionality in the following sections is built on top of these objects to remove the need for hardcoding the structure of the
+Fleur XML files in multiple places
 
 ### Selecting Xpaths
 Below is a simple example of getting the complete Xpath for a given tag name
@@ -313,11 +317,39 @@ print(convert_to_xml([0.0,1.0,2.0], schema_dict, 'kpoint', text=True))
 ```{note}
 The boolean second return value indicates whether the conversion was successful
 ```
-## XML getters
+## Retrieving information from XML files
 
+There are two levels of functions building on top of the schema functionality for retrieving
+information from XML files
+
+- Functions, that retrieve and convert values for one given tag/attribute from the xml file
+   - `evaluate_attribute`, `evaluate_text`, `evaluate_tag`, `evaluate_parent_tag`, `evaluate_single_value`, 
+     `tag_exists`, `attrib_exists`, `get_number_of_nodes`
+- Functions, that return a collection of values for a clearly defined property of the calculation
+   - `get_fleur_modes`: Dictionary with general switches and numbers identifying the _kind_ of Fleur calculation
+   - `get_cell`: Return the braivais matrix and periodicity
+   - `get_structure_data`: Return the atom position, symbols, braivais matrix and periodicity
+   - `get_parameter_data`: Return dict with additional LAPW parameters (cutoffs, ...)
+   - `get_kpoints_data`: Get Kpoint information in arrays
+   - `get_nkpts`: Get the numnber of kpoints used in the calculation (mainly for optimizing parallelization)
+   - `get_special_kpoints`: Get labelled kpoints in a kpoint set
+   - `get_symmetry_information`: Get the symmetry operations in the calculation
+
+The second set of functions uses the functions above to avoid hardcoding `XPath`
+
+### Usage
+
+### Relative XPaths
+
+### XML getter Versioning
 ## Modifying XML files
 
-## Predefined XML Parser
+```{tikz} Hierachy of XML setters
+   :include: tikz/xml_setter_hierachy.tikz
+   :align: center
+```
+
+## Predefined complete file Parsers
 
 ## Error handling
 ## Indices and tables

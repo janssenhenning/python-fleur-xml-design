@@ -62,5 +62,5 @@ html_theme = 'pydata_sphinx_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 #html_static_path = ['_static']
 
-tikz_tikzlibraries = 'arrows, chains, shapes, positioning, calc'
+tikz_tikzlibraries = 'arrows, chains, shapes, positioning, calc, intersections'
 tikz_includegraphics_path = 'tikz/graphics'
