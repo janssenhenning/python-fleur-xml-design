@@ -17,7 +17,7 @@ kernelspec:
      contain the root `toctree` directive. -->
 
 
-# Python API for Fleur XML files: Design
+# Python API for Fleur XML files
 
 ```{toctree}
    :maxdepth: 2
@@ -162,7 +162,8 @@ The structure of the XML files is very specific.
 
 The first step in doing anything with the Fleur XML files is parsing them into a datastructure
 in the python runtime. For this we use the `lxml` library. This library provides the very
-popular `ElementTree` API orgianllay from the `python stdlib` and has complete support for `XPath1.0` and `XInclude`. The latter is used to split up input files into more digestable chunks for users.
+popular `ElementTree` API originally from the `python stdlib` and has complete support for
+`XPath1.0` and `XInclude`. The latter is used to split up input files into more digestable chunks for users.
 In addition it uses the `libxml2` library under the hood, which is the same library used by
 the Fleur code itself.
 
@@ -251,8 +252,8 @@ found information is stored in dictionary like structures called `InputSchemaDic
 ```{admonition} Performance implications
    Looking at this structure one problem you might spot is that we dramatically increased the number
    of operations needed, just to get the path to a given tag. Previously the path would just be hardcoded
-   meaning almost no performance impact. With the new implementation a XML file maybe larger than the actual
-   input file has to be parsed.
+   meaning no performance impact at all. With the new implementation a XML file maybe larger than the actual
+   input file has to be parsed before gaining access to e.g. the path to a tag.
 
    To manage the impact of this there are multiple layers of reusing results, i.e. caching in the construction
    of the `SchemaDict` objects.
@@ -344,10 +345,37 @@ The second set of functions uses the functions above to avoid hardcoding `XPath`
 ### XML getter Versioning
 ## Modifying XML files
 
-```{tikz} Hierachy of XML setters
+When modifying the XML files more care has to be taken. The changes made could leave the
+XML file in a state inconsistent with the XML schema if the modification is done in multiple
+steps. In the previous implementation this was solved in `aiida-fleur` by bundling multiple
+changes together in the `FleurinpModifier` class, which are then executed together and changes
+are only validated at the end.
+
+This approach is also taken in the new implementation making use of the `SchemaDict` 
+functionalities. However, we introduce a much more strict separation of concerns of the
+underlying functions modifying the XML tree to make extension and reasoning about
+modifications easier. The three main categories of functions are shown below.
+
+```{tikz} Hierachy of XML setters. The width indicates that most if not all functionality should be introduced in the higher levels and reuse code in the levels below extensively
    :include: tikz/xml_setter_hierachy.tikz
    :align: center
 ```
+
+These categories are mainly identified by their function signature of their first arguments:
+
+- `Basic` setter functions: These take the XML tree and an explicit `XPath` expression and no `SchemaDict`
+- `Intermediate` setter functions: These take the XML tree, the corresponding `SchemaDict` and two `XPath` expressions. One is a `XPath` that is "simple", i.e. it is absolute and has no predicates (conditions in `[]`). The second `XPath` is unrestricted but has to produce a subset of the results the "simple" `XPath` produces
+- `Name` setter functions: These take the XML tree, the corresponding `SchemaDict` and require no `XPath` expression. They can however take a `XPath` expression as an optional argument
+
+When implementing XML setters it is allowed to call different functions on the same level of
+modification function or a level below (according to the pyramid). It is never allowed to go
+back up in the levels. The reason for this is that each higher level provides more
+functionality that cannot be reproduced consistently when going back up. For example the
+`Intermediate` functions are allowed to create nested tags if they are not present in the
+XML file. This is possible since these functions have access to the `SchemaDict` to make sure
+that the order of tags is always correct and no invalid tags are created. The `Basic` functions
+have no guarantees for this since they do not have access to the `SchemaDict`
+
 
 ## Predefined complete file Parsers
 
