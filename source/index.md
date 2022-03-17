@@ -212,7 +212,7 @@ to be very specific with what we want to find and it allows for more complex syn
 [filter the results](#filtering-results). It also allows us to express a unique location
 in the XML file with a single string, enabling us to define mappings between the locations
 in the XML file and their attached properties. Further as long as a XML file is not
-recursive, i.e. a tag can contain itselve, the number of the unique locations defined by
+recursive, i.e. a tag cannot contain itselve, the number of the unique locations defined by
 absolute XPaths without complex syntax is finite.
 ## Using the XML schema file
 
