@@ -290,6 +290,56 @@ for loading and validating `inp.xml` files, which is called, when any instance i
 All functionality in the following sections is built on top of these objects to remove the need for hardcoding the structure of the
 Fleur XML files in multiple places
 
+### Folder structure
+
+Below we show the folder structure of the subpackage in `masci-tools` implementing the parsing of the XML Schema described above
+
+```
+fleur_schema
+├── 0.27
+│   └── FleurInputSchema.xsd
+├── 0.28
+│   └── FleurInputSchema.xsd
+├── 0.29
+│   ├── FleurInputSchema.xsd
+│   └── FleurOutputSchema.xsd
+├── 0.30
+│   ├── FleurInputSchema.xsd
+│   └── FleurOutputSchema.xsd
+├── 0.31
+│   ├── FleurInputSchema.xsd
+│   └── FleurOutputSchema.xsd
+├── 0.32
+│   └── FleurInputSchema.xsd
+├── 0.33
+│   ├── FleurInputSchema.xsd
+│   └── FleurOutputSchema.xsd
+├── 0.34
+│   ├── FleurInputSchema.xsd
+│   └── FleurOutputSchema.xsd
+├── 0.35
+│   ├── FleurInputSchema.xsd
+│   └── FleurOutputSchema.xsd
+├── __init__.py
+├── fleur_schema_parser_functions.py
+├── inpschema_todict.py
+├── outschema_todict.py
+└── schema_dict.py
+```
+
+There are two parts to this implementation. First we have the python files that contain the functionality and the subfolders which contain the
+data in form of the Fleur XML schema files for each file version.
+
+- `fleur_schema_parser_functions.py` Contains all the blue node functions from above
+- `inpschema_todict.py` Collects and executes the parsing functions for the inp.xml
+- `outschema_todict.py` Collects and executes the parsing functions for the out.xml
+- `schema_dict.py` Defines the InputSchemaDict and OutputSchemaDict classes. Calls the functions in `inpschema_todict.py` and `outschema_todict.py` to construct the instances
+- `__init__.py` Exports the important classes so that they are available under `masci_tools.io.parsers.fleur_schema` directly
+
+The file schemas are put into the subfolders with their corresponding file version number (appears in the schema under `/xsd:schema/@version`).
+The names of these subfolders are limited to be numbers separated by dots and correspond exactly to the argument that has t be given to the
+`fromVersion` method to get `SchemaDict` instances for these versions.
+
 ### Selecting XPaths
 Below is a simple example of getting the complete Xpath for a given tag name
 ```{code-cell} ipython3
