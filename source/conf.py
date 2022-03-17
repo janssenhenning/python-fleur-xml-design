@@ -66,3 +66,4 @@ tikz_tikzlibraries = 'arrows, chains, shapes, positioning, calc, intersections'
 tikz_includegraphics_path = 'tikz/graphics'
 
 myst_heading_anchors = 3
+myst_enable_extensions=['colon_fence']

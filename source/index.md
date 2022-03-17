@@ -95,10 +95,10 @@ and modifying `.xml` files
 ````
 `````
 
-```{note}
+:::{note}
 This document does not try to explain the AiiDA framework itself but only the parts relevant
 for the XML functionality. For more information on AiiDA refer to it's [documentation](https://aiida.readthedocs.io/projects/aiida-core/en/latest/)
-```
+:::
 
 ## Problem
 
@@ -143,10 +143,10 @@ files
 - `FleurInputSchema.xsd` defines the complete structure of the `inp.xml`
 - `FleurOutputSchema.xsd` defines the complete structure of the `out.xml`
 
-```{note}
+:::{note}
 Since the `out.xml` contains a copy of the used input to make it useful as a standalone file
 the `FleurOutputSchema.xsd` also explicitly includes the `FleurInputSchema.xsd`
-```
+:::
 
 The structure of the XML files is very specific.
 - A large amount of the data is stored in XML attributes
@@ -169,7 +169,8 @@ popular `ElementTree` API originally from the `python stdlib` and has complete s
 In addition it uses the `libxml2` library under the hood, which is the same library used by
 the Fleur code itself.
 
-```{admonition} Using lxml for untrusted input
+:::{admonition} Using lxml for untrusted input
+:class: warning
 
 For XML files from untrusted sources special care must be taken to avoid security problems.
 A general guide for using `lxml` in these cirumstances can be found [here](https://lxml.de/FAQ.html#how-do-i-use-lxml-safely-as-a-web-service-endpoint)
@@ -179,14 +180,14 @@ Some features used by the Fleur XML files have to be limited in these cases:
 
 At the moment there are only a couple measures taken to make the API in `masci-tools` safer
 but it is definitely not safe for use directly as a web service
-```
+:::
 
 Example of parsing XML files with `lxml`
 
-```{literalinclude} test.xml
+:::{literalinclude} test.xml
    :language: xml
    :caption:
-```
+:::
 
 ```{code-cell} ipython3
 from lxml import etree
@@ -244,9 +245,9 @@ print(f'Is this file valid? {schema(xmltree)}')
 Or the file can be used like a normal XML file. The following example retrieves how many
 different complex types are defined in the schema.
 
-```{note}
+:::{note}
 In Schema files all tags are prefixed with a special namespace `xsd`
-```
+:::
 
 ```{code-cell} ipython3
 from lxml import etree
@@ -266,7 +267,8 @@ found information is stored in dictionary like structures called `InputSchemaDic
    :align: center
 ```
 
-```{admonition} Performance implications
+:::{admonition} Performance implications
+:class: important
    Looking at this structure one problem you might spot is that we dramatically increased the number
    of operations needed, just to get the path to a given tag. Previously the path would just be hardcoded
    meaning no performance impact at all. With the new implementation a XML file maybe larger than the actual
@@ -279,7 +281,7 @@ found information is stored in dictionary like structures called `InputSchemaDic
       The results of these queries are cached
    2. If a `SchemaDict` is constructed using the `fromVersion` method the SchemaDict is only constructed on the first
       run. On subsequent calls with the same version string the cached object is returned
-```
+:::
 
 The `load_inpxml` and `load_outxml` functions in `masci_tools.io.io_fleurxml` provide this schema dictionary together with the
 parsed xml file just by giving the filepath to a given XML file. The `aiida-fleur` `FleurinpData` class has a wrapper method
@@ -304,9 +306,9 @@ schema_dict = InputSchemaDict.fromVersion('0.31')
 print(schema_dict.tag_xpath('xcfunctional'))
 ```
 
-```{note}
+:::{note}
    The tag name given in the method is case-insensitive `XCFUNCTIONAL` would also work
-```
+:::
 
 ### Working with types
 
