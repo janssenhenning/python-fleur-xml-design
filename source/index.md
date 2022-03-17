@@ -195,10 +195,25 @@ xmltree = etree.parse('test.xml')
 root = xmltree.getroot()
 print(f'Root Tag: {root.tag}')
 
+text = [node.text for node in root.findall('child')]
+print(f"Text of 'child' elements: {text}")
+
 text = root.xpath('//child/text()')
 print(f"Text of 'child' elements: {text}")
 ```
 
+The code cell above uses two equivalent methods of searching the XML tree. First we use
+a method of the `ElementTree` API called `findall` which searches for tags with the given
+name. In the second way we use a the called [XPath](https://www.w3schools.com/xml/xpath_syntax.asp) standard for specifying a path through the XML tree simlar to a file
+system path. 
+
+The latter is used in the majority of cases in the following implementations. It allows us
+to be very specific with what we want to find and it allows for more complex syntax to
+[filter the results](#filtering-results). It also allows us to express a unique location
+in the XML file with a single string, enabling us to define mappings between the locations
+in the XML file and their attached properties. Further as long as a XML file is not
+recursive, i.e. a tag can contain itselve, the number of the unique locations defined by
+absolute XPaths without complex syntax is finite.
 ## Using the XML schema file
 
 The XML Schema files provide a great way of programmatically discovering the structure of the
@@ -271,7 +286,7 @@ for loading and validating `inp.xml` files, which is called, when any instance i
 All functionality in the following sections is built on top of these objects to remove the need for hardcoding the structure of the
 Fleur XML files in multiple places
 
-### Selecting Xpaths
+### Selecting XPaths
 Below is a simple example of getting the complete Xpath for a given tag name
 ```{code-cell} ipython3
 from masci_tools.io.parsers.fleur_schema import InputSchemaDict
@@ -376,10 +391,12 @@ XML file. This is possible since these functions have access to the `SchemaDict`
 that the order of tags is always correct and no invalid tags are created. The `Basic` functions
 have no guarantees for this since they do not have access to the `SchemaDict`
 
+## Filtering Results
 
 ## Predefined complete file Parsers
 
 ## Error handling
+
 ## Indices and tables
 
 

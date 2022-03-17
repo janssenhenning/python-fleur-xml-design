@@ -64,3 +64,5 @@ html_theme = 'pydata_sphinx_theme'
 
 tikz_tikzlibraries = 'arrows, chains, shapes, positioning, calc, intersections'
 tikz_includegraphics_path = 'tikz/graphics'
+
+myst_heading_anchors = 3
