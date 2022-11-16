@@ -419,9 +419,7 @@ information from XML files
 
 The second set of functions uses the functions above to avoid hardcoding `XPath`
 
-### Usage
-
-#### Universal functions
+### Usage of universal functions
 
 First let's see a few examples of usage for the universal functions that can operate on any
 part of the XML file, like `evaluate_attribute`. The basic usage only requires the name of the
@@ -460,7 +458,108 @@ evaluate_attribute(xmltree, schema_dict, 'radius', not_contains='species')
 
 ### Relative XPaths
 
+Another approach to ditinguish the two paths possible in the example above is to change the `xmltree` argument out
+with an element from the XML tree, from which the choice is no longer ambiguous.
+
+```{code-cell} ipython3
+from masci_tools.util.schema_dict_util import eval_simple_xpath
+species = eval_simple_xpath(xmltree, schema_dict, 'atomSpecies')
+```
+
+Now when looking forward from the `atomSpecies` node, there is only one `radius` attribute so the `evaluate_attribute`
+function works without further specifications.
+
+```{code-cell} ipython3
+evaluate_attribute(species, schema_dict, 'radius')
+```
+
+### FleurXMLContext
+
+The FleurXMLContext class allows to bundle multiple evaluations and make them more concise. It holds aliases to all the universal functions, with the `xmltree` and `schema_dict` arguments already filled in.
+
+- `attribute`: `evaluate_attribute`
+- `text`: `evaluate_text`
+- `all_attributes()`: `evaluate_tag`
+- `parent_attributes()`: `evaluate_parent_tag`
+- `single_value()`: `evaluate_single_value`
+- `tag_exists()`: `tag_exists`
+- `number_nodes()`: `get_number_of_nodes`
+- `attribute_exists()`: `attrib_exists`
+- `simple_xpath()`: `eval_simple_xpath`
+
+In addition it has three methods for easily change the node from which to evaluate expressions from.
+These are either used in a context manager (`with` block), or in the case of `iter` in a `for` loop
+
+- `find()`: Find the first occurrence of the tag and change to this node during the `with` block
+- `iter()`: Find all occurrences of the tag and iterate through the nodes in a loop
+- `nested()`: Pass in a node and inherit all the other context within the `with` block
+
+```{code-cell} ipython3
+from masci_tools.io.fleur_xml import FleurXMLContext
+
+xmltree, schema_dict = load_inpxml('example_files/inp_valid.xml')
+
+with FleurXMLContext(xmltree, schema_dict) as root:
+   print(f"Number of spins: {root.attribute('jspins')}")
+   print(f"Muffin-tin radius: {root.attribute('radius', contains='species')}")
+   
+   print('Atomic positions:')
+   for pos in root.iter('relpos'):
+      print(f"{pos.attribute('label')}: {pos.text('relpos')}")
+```
+
+#### Specialized functions
+
+All the other more specialized functions only need the `xmltree` and `schema_dict` arguments to work
+and are located in `masci_tools.util.xml.xml_getters`.
+Since they are way more specific they have unique outputs. For details on this, please look into
+the `masci-tools` documentation
+
+```{code-cell} ipython3
+from masci_tools.io.fleur_xml import load_inpxml
+from masci_tools.util.xml.xml_getters import get_structure_data
+
+xmltree, schema_dict = load_inpxml('example_files/inp_valid.xml')
+
+atoms, cell, pbc = get_structure_data(xmltree, schema_dict)
+
+print('Bravais matrix:')
+print(cell)
+print(f'Periodic boundary conditions (x,y,z): {pbc}')
+print('Atomic information:')
+print(atoms)
+```
+
 ### XML getter Versioning
+
+For different versions of the input/output the logic of the specialized XML getter functions might need to change.
+If the required changes are limited in size this can be achieved using the `inp_version`/`out_version` attributes
+of the `SchemaDict` objects.
+
+If more involved changes are needed a mechanism is available for creating multiple variants of a function which are
+called based on the file version. This approach is based on decorators.
+
+```python
+from masci_tools.io.parsers.fleur_schema import schema_dict_version_dispatch
+
+@schema_dict_version_dispatch(output_schema=False) #output_schema=False means we distinguish the variants by the input version
+def example_xml_function(xmltree, schema_dict):
+   """
+   This is the default version of the XML getter function
+   """
+   ...
+
+@example_xml_function.register(max_version='0.31')
+def alternative_xml_function(xmltree, schema_dict):
+   """
+   This is an alternative version of the XML getter function
+   It will be called for any file with input version 0.31 or older
+
+   In all other cases the default function is called
+   """
+   ...
+```
+
 ## Modifying XML files
 
 When modifying the XML files more care has to be taken. The changes made could leave the
