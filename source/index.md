@@ -43,6 +43,7 @@ Ultimately this document explains the background behind the following code block
 :::
 
 :::{tab-item} non-AiiDA
+:sync: non-AiiDA
    ```python
    from masci_tools.io.io_fleurxml import load_inpxml
    from masci_tools.util.xml.xml_getters import get_structure_data, get_parameter_data
@@ -80,6 +81,7 @@ and modifying `.xml` files
 :::
 
 :::{tab-item} non-AiiDA
+:sync: non-AiiDA
    ```python
    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
 
@@ -426,7 +428,7 @@ from masci_tools.util.schema_dict_util import evaluate_attribute
 
 xmltree, schema_dict = load_inpxml('example_files/inp_valid.xml')
 
-print(f"Number of spins: {evaluate_attribute(xmltree, schema, 'jspins')}")
+print(f"Number of spins: {evaluate_attribute(xmltree, schema_dict, 'jspins')}")
 ```
 
 If the attribute name allows more than one possibility an error is raised and
