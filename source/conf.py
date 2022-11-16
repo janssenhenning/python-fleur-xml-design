@@ -29,7 +29,7 @@ author = 'Henning Janßen'
 # ones.
 extensions = [
     'myst_nb',
-    'sphinx_tabs.tabs',
+    'sphinx_design',
     'sphinx.ext.intersphinx',
     'sphinx_copybutton',
     'sphinxcontrib.tikz',
@@ -64,6 +64,7 @@ html_theme = 'pydata_sphinx_theme'
 
 tikz_tikzlibraries = 'arrows, chains, shapes, positioning, calc, intersections'
 tikz_includegraphics_path = 'tikz/graphics'
+tikz_transparent=True
 
 myst_heading_anchors = 3
 myst_enable_extensions=['colon_fence',]

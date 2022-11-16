@@ -27,10 +27,10 @@ This site aims to explain the design of the current functionality for working wi
 
 Ultimately this document explains the background behind the following code blocks for loading information from `.xml` files
 
-`````{tabs}
+::::{tab-set}
 
-````{group-tab} AiiDA
-
+:::{tab-item} AiiDA
+:sync: AiiDA
    ```python
    from aiida import plugins
 
@@ -40,9 +40,9 @@ Ultimately this document explains the background behind the following code block
    structure = fleurinp.get_structuredata()
    lapw_parameters = fleurinp.get_parameterdata()
    ```
-````
-````{group-tab} non-AiiDA
+:::
 
+:::{tab-item} non-AiiDA
    ```python
    from masci_tools.io.io_fleurxml import load_inpxml
    from masci_tools.util.xml.xml_getters import get_structure_data, get_parameter_data
@@ -52,15 +52,17 @@ Ultimately this document explains the background behind the following code block
    structure_information = get_structure_data(xmltree, schema_dict)
    lapw_parameters = get_parameter_data(xmltree, schema_dict)
    ```
-````
-`````
+:::
+
+::::
+
 
 and modifying `.xml` files
 
-`````{tabs}
+::::{tab-set}
 
-````{group-tab} AiiDA
-
+:::{tab-item} AiiDA
+:sync: AiiDA
    ```python
    from aiida_fleur.data.fleurinpmodifier import FleurinpModifier
 
@@ -75,9 +77,9 @@ and modifying `.xml` files
 
    fleurinp = modifier.freeze()
    ```
-````
-````{group-tab} non-AiiDA
+:::
 
+:::{tab-item} non-AiiDA
    ```python
    from masci_tools.io.fleurxmlmodifier import FleurXMLModifier
 
@@ -92,8 +94,9 @@ and modifying `.xml` files
 
    xmltree, _ = modifier.modify_xmlfile('inp.xml')
    ```
-````
-`````
+:::
+
+::::
 
 :::{note}
 This document does not try to explain the AiiDA framework itself but only the parts relevant
@@ -423,7 +426,7 @@ from masci_tools.util.schema_dict_util import evaluate_attribute
 
 xmltree, schema_dict = load_inpxml('example_files/inp_valid.xml')
 
-print(f"Number of spins: {evaluate_attribute(xmltree, schema, 'jspins')}"
+print(f"Number of spins: {evaluate_attribute(xmltree, schema, 'jspins')}")
 ```
 
 If the attribute name allows more than one possibility an error is raised and
