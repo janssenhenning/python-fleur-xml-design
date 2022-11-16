@@ -23,7 +23,8 @@
 }
 
 \node [large, font=\tiny, fill=red!25] (files) {
-\texttt{FleurInputSchema.xsd}/\texttt{FleurOutputSchema.xsd}\\
+\large\textbf{\texttt{FleurInputSchema.xsd}/\texttt{FleurOutputSchema.xsd}}\\
+\tiny
 \begin{verbatim}
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="0.35">
@@ -49,13 +50,13 @@
 \end{verbatim}
 };
 
-\node[small, font=\tiny, fill=blue!25, below] (f0) {Extract Attribute Types};
-\node[small, font=\tiny, fill=blue!25, left= of f0] (f1) {Extract Text Types};
-\node[small, font=\tiny, fill=blue!25, left= of f1] (f2) {Extract possible XPaths};
-\node[small, font=\tiny, fill=blue!25, right=of f0] (f3) {Extract order of Tags};
-\node[small, font=\tiny, fill=blue!25, right= of f3] (fmisc) {Miscellenaous functions ...};
+\node[small, font=\tiny\bfseries, fill=blue!25, below] (f0) {Extract Attribute Types};
+\node[small, font=\tiny\bfseries, fill=blue!25, left= of f0] (f1) {Extract Text Types};
+\node[small, font=\tiny\bfseries, fill=blue!25, left= of f1] (f2) {Extract possible XPaths};
+\node[small, font=\tiny\bfseries, fill=blue!25, right=of f0] (f3) {Extract order of Tags};
+\node[small, font=\tiny\bfseries, fill=blue!25, right= of f3] (fmisc) {Miscellenaous functions ...};
 \node[large, fill=green!25, below= 7cm of files] (objects) {
-InputSchemaDict/OutputSchemaDict\\
+\textbf{InputSchemaDict/OutputSchemaDict}\\
 \begin{itemize}
     \item constructed either from file (\texttt{.fromPath}) or just the version string (\texttt{.fromVersion})
     \item \texttt{xmlschema} attribute with corresponding \texttt{etree.XMLSchema}
@@ -63,13 +64,13 @@ InputSchemaDict/OutputSchemaDict\\
 \end{itemize}
 };
 
-\draw [->,black]  (files.south) -- (f0.north);
-\draw [->,black]  (files.south) -- (f1.north);
-\draw [->,black]  (files.south) -- (f2.north);
-\draw [->,black]  (files.south) -- (f3.north);
-\draw [->,black]  (files.south) -- (fmisc.north);
-\draw [->,black]  (f0.south) -- (objects.north);
-\draw [->,black]  (f1.south) -- (objects.north);
-\draw [->,black]  (f2.south) -- (objects.north);
-\draw [->,black]  (f3.south) -- (objects.north);
-\draw [->,black]  (fmisc.south) -- (objects.north);
+\draw [->,black]  (files) edge (f0.north);
+\draw [->,black]  (files) edge (f1.north);
+\draw [->,black]  (files) edge (f2.north);
+\draw [->,black]  (files) edge (f3.north);
+\draw [->,black]  (files) edge (fmisc.north);
+\draw [->,black]  (f0) edge (objects);
+\draw [->,black]  (f1) edge (objects);
+\draw [->,black]  (f2) edge (objects);
+\draw [->,black]  (f3) edge (objects);
+\draw [->,black]  (fmisc) edge (objects);

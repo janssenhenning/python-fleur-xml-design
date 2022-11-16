@@ -395,6 +395,7 @@ information from XML files
 - Functions, that retrieve and convert values for one given tag/attribute from the xml file
    - `evaluate_attribute`, `evaluate_text`, `evaluate_tag`, `evaluate_parent_tag`, `evaluate_single_value`, 
      `tag_exists`, `attrib_exists`, `get_number_of_nodes`
+- `FleurXMLContext` is a convenience class to bundle the above functions
 - Functions, that return a collection of values for a clearly defined property of the calculation
    - `get_fleur_modes`: Dictionary with general switches and numbers identifying the _kind_ of Fleur calculation
    - `get_cell`: Return the braivais matrix and periodicity
