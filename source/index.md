@@ -667,7 +667,47 @@ filters={
 
 ## Predefined complete file Parsers
 
+### inp.xml
+
+The parser for the `inp.xml` is very simple, since the `inp.xml` is limited in size the parser
+will go through all tags and attributes in the `inp.xml` file and convert them to python types
+according to their type. This complete representation is used in `aiida-fleur` for example to have
+a complete representation of the values in the database and making it queriable.
+
+```{code-cell} ipython3
+from masci-tools.io.parsers.fleur import inpxml_parser
+from pprint import pprint
+
+inp_dict = inpxml_parser('example_files/inp_valid.xml')
+
+pprint(inp_dict['calculationSetup'])
+```
+
+### out.xml
+
 ## Error handling
+
+When handling exceptions and errors in the XML functions, we need to consider what
+kind of usage is most common and what is required.
+
+There are essentially two sides to this:
+- If the functions are used in the context of AiiDA, an exception should be recoverable and
+  as much information should still be used as possible together with logs, where all occuring
+  errors are clearly documented
+- If the functions are used in the context of user scripts directly it is much more desirable
+  to except as early as the program knows, that the result is not usable, for example `None`, 
+  and let the user make the necessary modifications
+
+To handle both of these cases the standard approach is for functions to provide an optional argument
+`logger`, which takes a `Logger` from the corresponding library of the stdlib of python. If
+this argument is provided, we are in the first case and functions should only except for really
+critical errors and return maybe less usable but no no information.
+
+As an example the evaluation routines will return the unconverted string from the XML file
+if the `logger` argument is given and no conversion was successful but it could be retrieved 
+from the file. On the other hand if the `logger` argument is not given the function will raise
+an error. With this behaviour users can be sure that if the function did not raise an error all
+conversions were successful.
 
 ## Indices and tables
 
