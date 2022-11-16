@@ -1,7 +1,7 @@
 sphinx~=4.0
 myst-nb
 pydata-sphinx-theme
-sphinx-tabs
+sphinx-design
 sphinx-copybutton
 sphinxcontrib-tikz
 lxml
