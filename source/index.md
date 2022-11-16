@@ -410,6 +410,43 @@ The second set of functions uses the functions above to avoid hardcoding `XPath`
 
 ### Usage
 
+#### Universal functions
+
+First let's see a few examples of usage for the universal functions that can operate on any
+part of the XML file, like `evaluate_attribute`. The basic usage only requires the name of the
+attribute to obtain in this case. This pattern holds for any of the functions in
+`masci_tools.util.schema_dict_util`
+
+```{code-cell} ipython3
+from masci_tools.io.fleur_xml import load_inpxml
+from masci_tools.util.schema_dict_util import evaluate_attribute
+
+xmltree, schema_dict = load_inpxml('example_files/inp_valid.xml')
+
+print(f"Number of spins: {evaluate_attribute(xmltree, schema, 'jspins')}"
+```
+
+If the attribute name allows more than one possibility an error is raised and
+the desired attribute can be selected using phrases that should (`contains`) or should not
+(`not_contains`) be included in the path in the XML file.
+
+```{code-cell} ipython3
+:tags: [raises-exception]
+evaluate_attribute(xmltree, schema_dict, 'mtRadius')
+```
+
+```{code-cell} ipython3
+:tags: [raises-exception]
+evaluate_attribute(xmltree, schema_dict, 'mtRadius', contains='species')
+```
+
+```{code-cell} ipython3
+:tags: [raises-exception]
+#The result is empty since the example file has no mtRadius attribtues specified
+#on the atom groups
+evaluate_attribute(xmltree, schema_dict, 'mtRadius', not_contains='species')
+```
+
 ### Relative XPaths
 
 ### XML getter Versioning
