@@ -6,10 +6,11 @@
     ]
 \tikzset{
   base/.style={draw, on chain, on grid, align=center, minimum height=4ex},
-  proc/.style={base, rounded corners, text width=20em},
+  proc/.style={base, rounded corners, text width=10em},
   large/.style={base, rounded corners, text width=30em},
   test/.style={base, rounded corners, aspect=2, text width=8em},
   small/.style={proc, rounded corners,text width=6em},
+  decision/.style={proc, diamond,text width=6em, aspect=2},
   % coord node style is used for placing corners of connecting lines
   coord/.style={coordinate, on chain, on grid, node distance=6mm and 55mm},
   % nmark node style is used for coordinate debugging marks
@@ -22,21 +23,38 @@
   it/.style={font={\small\itshape}}
 }
 
-\node[base, fill=blue!25] (file) {\texttt{out.xml}};
-\node[base, fill=blue!25, right=of file] (iterations) {Which iterations?};
+\node[proc, fill=blue!25] (file) {\texttt{out.xml}};
+\node[proc, fill=blue!25, right=0.5 of file.east] (iterations) {Which iterations?};
 
-\node[base, fill=orange!25, below=of $(file)!0.5!(iterations)$] (tasks) {
+\node[proc, fill=orange!25, below=2 of $(file)!0.5!(iterations)$] (tasks) {
     Use \texttt{get\_fleur\_modes}\\
     to determine list of \textbf{tasks}
 };
-\node[base, fill=orange!25, join] (parse) {
-    For each iteration and task:\\
-
-    Perform Task
+\node[decision, fill=green!25, join, below=2.5 of tasks.south] (iterations-done) {
+    Iterations finished?
 };
-\node[base, fill=red!25, join] (out) {
+\node[decision, fill=green!25, join, right=0.75 of iterations-done.east] (tasks-done) {
+    All tasks finished?
+};
+\node[proc, fill=orange!25] (task) {
+    Perform next task
+};
+\node[proc, fill=orange!25, join, right=0.5 of task.east] (add) {
+    Add result to output dictionary
+};
+
+\node[coord, above= 1.5 of tasks-done.north] (c1) {};
+
+
+\node[proc, fill=red!25, below=2 of iterations-done.south] (out) {
     Output dictionary
 };
 
 \draw [->,black]  (file) edge (tasks);
 \draw [->,black]  (iterations) edge (tasks);
+\draw [-,black] (tasks-done.north) -- (c1) node[xshift=1em] {Yes} -- (c1-|iterations-done.north);
+\draw [->,black]  (tasks-done) edge (task) node[yshift=-1.5cm, xshift=1em] {No};
+\draw [->,black] (add.north) -- (add.north|-tasks-done) -- (tasks-done.east);
+\draw [->,black] (iterations-done.east) -- (tasks-done.west) node[xshift=-1em,yshift=1em] {No};
+\draw [->,black]  (iterations-done) edge (out) node[xshift=1em,yshift=-1.5cm] {Yes};
+
