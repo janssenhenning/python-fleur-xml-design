@@ -65,6 +65,7 @@ html_theme = 'pydata_sphinx_theme'
 tikz_tikzlibraries = 'arrows, chains, shapes, positioning, calc, intersections'
 tikz_includegraphics_path = 'tikz/graphics'
 tikz_transparent=True
+tikz_proc_suite='pdf2svg'
 
 myst_heading_anchors = 3
 myst_enable_extensions=['colon_fence',]
