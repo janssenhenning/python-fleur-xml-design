@@ -11,3 +11,5 @@ python:
 
 build:
   image: testing
+  apt_packages:
+    - pdf2svg
