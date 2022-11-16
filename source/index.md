@@ -135,7 +135,7 @@ The XML functionality in `masci-tools` aims to provide a way to centralize this 
   should also be preferred in the new implementation
 - Users should not be required to know the complete `XPath` to be able to retrieve
   information, but ideally and if possible only the name of the last node in the path.
-  The complete Path would already special knowledge and new functionality should be
+  The complete Path would be special knowledge and new functionality should be
   much closer to the way `set_inpchanges` works
 - Maintenance for including changes in the XML file structure with new Fleur releases should
   be minimal
@@ -527,7 +527,8 @@ print('Bravais matrix:')
 print(cell)
 print(f'Periodic boundary conditions (x,y,z): {pbc}')
 print('Atomic information:')
-print(atoms)
+for atom in atoms:
+   print(atom)
 ```
 
 ### XML getter Versioning
@@ -542,10 +543,12 @@ called based on the file version. This approach is based on decorators.
 ```python
 from masci_tools.io.parsers.fleur_schema import schema_dict_version_dispatch
 
-@schema_dict_version_dispatch(output_schema=False) #output_schema=False means we distinguish the variants by the input version
+@schema_dict_version_dispatch(output_schema=False)
 def example_xml_function(xmltree, schema_dict):
    """
    This is the default version of the XML getter function
+    
+   output_schema=False means we distinguish the variants by the input version
    """
    ...
 
@@ -594,6 +597,73 @@ that the order of tags is always correct and no invalid tags are created. The `B
 have no guarantees for this since they do not have access to the `SchemaDict`
 
 ## Filtering Results
+
+Almost all of the universal modifying and getting functions have an argument `filters`.
+This enables more involved selection of results by other values/properties of the XML file.
+
+In order to use this feature however, one needs to know a bit more about the XPath of the
+property of interest. Let's say we again want to evaluate the `radius` attribute on the `species`
+tag. This coressponds to the following basic XPath
+
+```
+/fleurInput/atomSpecies/species/mtSphere/@radius
+```
+
+And now we can use each component of the path to add more conditions to it. A complete 
+documentation of the possible syntax is available in the masci-tools documentation.
+
+Here we show a few examples of the `filters` argument and their resulting XPath
+
+Only get muffin-tin radius of iron atoms
+```python
+filters={
+   'species': {'element': 'Fe'}
+}
+```
+```
+/fleurInput/atomSpecies/species[@element='Fe']/mtSphere/@radius
+```
+
+Only get muffin-tin of atoms with lmax bigger than 8
+```python
+filters={
+   'mtSphere': {'lmax': {'>': 8}}
+}
+```
+```
+/fleurInput/atomSpecies/species/mtSphere[@lmax>8]/@radius
+```
+
+Only get muffin-tin of atoms with lmax bigger than 8 and present los
+```python
+filters={
+   'mtSphere': {'lmax': {'>': 8}},
+   'species': {'has': 'lo'}
+}
+```
+```
+/fleurInput/atomSpecies/species[lo]/mtSphere[@lmax>8]/@radius
+```
+
+Multiple conditions
+```python
+filters={
+   'mtSphere': {'and': [{'lmax': {'>': 8}}, {'radius': {'<': 2}}]}
+}
+```
+```
+/fleurInput/atomSpecies/species/mtSphere[@lmax>8 and @radius<2]/@radius
+```
+
+Test for membership
+```python
+filters={
+   'species': {'element': {'in': ['Fe', 'Si']}}
+}
+```
+```
+/fleurInput/atomSpecies/species[@element='Fe' or @element='Si']/mtSphere/@radius
+```
 
 ## Predefined complete file Parsers
 
