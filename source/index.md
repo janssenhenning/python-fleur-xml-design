@@ -11,7 +11,7 @@ kernelspec:
   name: python3
 ---
 
-<!-- Remove unecessary excpetion information -->
+<!-- Remove unecessary exception information -->
 ```{code-cell} ipython3
 :tags: [remove-cell]
 %xmode Minimal
@@ -684,6 +684,61 @@ pprint(inp_dict['calculationSetup'])
 ```
 
 ### out.xml
+
+The parser for the output XML file needs to be a lot more selective. Since the size of the calculation
+can be massive, it not only means that the correcponding output dictionary would also be massive and
+the important information would be lost. In most cases the user is only interested in selected 
+properties from the last converged SCF iteration. However, the properties of interest will depend on
+the kind of calculation that is performed. Therefore the design needs to be a lot more modular.
+
+The basic idea is to break down the parsing of the file into different blocks that can be treated as 
+one entity. Examples for this are
+
+- Determine total energy and individual contributions to the total energy
+- Determine the fermi energy
+- Determine magnetic or orbital moments
+- Determine forces
+- ...
+
+:::{note}
+These tasks are defined in the form of a dictionary in 
+`masci_tools.io.parser.fleur.default_parse_tasks`. For a complete reference on the possibilities
+look into the masci-tools documentation. Below an example for retrieveing the total energy
+
+```python
+total_energy_definition = {
+   'energy_hartree': {
+      'parse_type': 'singleValue',
+      'path_spec': {
+            'name': 'totalEnergy'
+      }
+   },
+}
+```
+:::
+
+
+In the beginning now the `get_fleur_modes` function (see above) is used to determine the kind of
+calculation. From this the tasks to perform can be deduced. The structure of the `out.xml` parser
+is sketched.
+
+```{tikz} Structure of the out.xml parser
+   :include: tikz/outxml_parser.tikz
+   :align: center
+```
+
+Below an example of the kind of information parsed is shown
+
+```{code-cell} ipython3
+from masci_tools.io.parsers.fleur import outxml_parser
+from pprint import pprint 
+
+#By default the last iteration is parsed
+#This can be modified with the iteration_to_parse argument
+#e.g. iteration_to_parse='all' will parse all SCF iterations
+result = outxml_parser('example_files/out.xml')
+pprint(result)
+```
 
 ## Error handling
 

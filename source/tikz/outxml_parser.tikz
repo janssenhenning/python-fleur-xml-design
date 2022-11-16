@@ -1,0 +1,42 @@
+[
+    >=triangle 60,              
+    start chain=going below,    
+    node distance=6mm and 30mm, 
+    every join/.style={norm},
+    ]
+\tikzset{
+  base/.style={draw, on chain, on grid, align=center, minimum height=4ex},
+  proc/.style={base, rounded corners, text width=20em},
+  large/.style={base, rounded corners, text width=30em},
+  test/.style={base, rounded corners, aspect=2, text width=8em},
+  small/.style={proc, rounded corners,text width=6em},
+  % coord node style is used for placing corners of connecting lines
+  coord/.style={coordinate, on chain, on grid, node distance=6mm and 55mm},
+  % nmark node style is used for coordinate debugging marks
+  nmark/.style={draw, cyan, circle, font={\sffamily\bfseries}},
+  % -------------------------------------------------
+  % Connector line styles for different parts of the diagram
+  norm/.style={->, draw},
+  free/.style={->, draw},
+  cong/.style={->, draw},
+  it/.style={font={\small\itshape}}
+}
+
+\node[base, fill=blue!25] (file) {\texttt{out.xml}};
+\node[base, fill=blue!25, right=of file] (iterations) {Which iterations?};
+
+\node[base, fill=orange!25, below=of $(file)!0.5!(iterations)$] (tasks) {
+    Use \texttt{get\_fleur\_modes}\\
+    to determine list of \textbf{tasks}
+}
+\node[base, fill=orange!25, join] (parse) {
+    For each iteration and task:\\
+
+    Perform Task
+}
+\node[base, fill=red!25, join] (out) {
+    Output dictionary
+}
+
+\draw [->,black]  (file) edge (tasks);
+\draw [->,black]  (iterations) edge (tasks);
