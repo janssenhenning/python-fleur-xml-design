@@ -11,6 +11,12 @@ kernelspec:
   name: python3
 ---
 
+<!-- Remove unecessary excpetion information -->
+```{code-cell} ipython3
+:tags: [remove-cell]
+%xmode Minimal
+```
+
 <!-- Python Fleur XML design documentation master file, created by
      sphinx-quickstart on Fri Mar 11 16:07:58 2022.
      You can adapt this file completely to your liking, but it should at least
