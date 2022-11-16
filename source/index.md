@@ -437,19 +437,19 @@ the desired attribute can be selected using phrases that should (`contains`) or 
 
 ```{code-cell} ipython3
 :tags: [raises-exception]
-evaluate_attribute(xmltree, schema_dict, 'mtRadius')
+evaluate_attribute(xmltree, schema_dict, 'radius')
 ```
 
 ```{code-cell} ipython3
 :tags: [raises-exception]
-evaluate_attribute(xmltree, schema_dict, 'mtRadius', contains='species')
+evaluate_attribute(xmltree, schema_dict, 'radius', contains='species')
 ```
 
 ```{code-cell} ipython3
 :tags: [raises-exception]
 #The result is empty since the example file has no mtRadius attribtues specified
 #on the atom groups
-evaluate_attribute(xmltree, schema_dict, 'mtRadius', not_contains='species')
+evaluate_attribute(xmltree, schema_dict, 'radius', not_contains='species')
 ```
 
 ### Relative XPaths
