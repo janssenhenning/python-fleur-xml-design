@@ -675,7 +675,7 @@ according to their type. This complete representation is used in `aiida-fleur` f
 a complete representation of the values in the database and making it queriable.
 
 ```{code-cell} ipython3
-from masci-tools.io.parsers.fleur import inpxml_parser
+from masci_tools.io.parsers.fleur import inpxml_parser
 from pprint import pprint
 
 inp_dict = inpxml_parser('example_files/inp_valid.xml')
