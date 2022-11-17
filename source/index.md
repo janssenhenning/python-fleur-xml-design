@@ -118,14 +118,14 @@ external tools with the ability to retrieve information from these or modify the
 file in a well defined manner.
 
 However, changes in the structure of these XML formats produces a non-trivial amount of
-maintenance that needs to happen in external packages. Especially for the AiiDA plugin for
-the Fleur code was required to do a release with a lot of small compatibility changes for each
+maintenance that needs to happen in external packages. Especially the AiiDA plugin for
+the Fleur code was required to publish a release with a lot of small compatibility changes for each
 release of the code, limiting the ability to support more Fleur releases with the same version
 of the plugin. For example in releases up to version `1.1.4` a function was implemented hardcoding
 the needed information about the `inp.xml` file in [this function](https://github.com/JuDFTteam/aiida-fleur/blob/v1.1.4/aiida_fleur/tools/xml_util.py#L1694:5)
 and the parser for the `out.xml` file also hardcoded a lot of the file structure (see [here](https://github.com/JuDFTteam/aiida-fleur/blob/v1.1.4/aiida_fleur/parsers/fleur.py#L343:9)) 
 
-The XML functionality in `masci-tools` aims to provide a way to centralize this effort andmaking the extension and implementation of new features easier.
+The XML functionality in `masci-tools` aims to provide a way to centralize this effort and make the extension and implementation of new features easier.
 
 ## Design principles
 
@@ -205,7 +205,7 @@ from lxml import etree
 
 xmltree = etree.parse('test.xml')
 
-#The xmltree now contains the complete informationg from the XML file
+#The xmltree now contains the complete information from the XML file
 root = xmltree.getroot()
 print(f'Root Tag: {root.tag}')
 
